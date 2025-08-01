@@ -30,36 +30,98 @@ export default function HomeScreen({ navigation }: Props) {
     }
   };
 
-  const menuItems = [
-    {
-      title: "Job Board",
-      description: "Browse and apply to jobs",
-      icon: "💼",
-      onPress: () => navigation.navigate("JobBoard"),
-      color: Colors.primary[500],
-    },
-    {
-      title: "Profile",
-      description: "Manage your profile and settings",
-      icon: "👤",
-      onPress: () => navigation.navigate("Profile"),
-      color: Colors.secondary[500],
-    },
-    {
-      title: "Subscription",
-      description: "Upgrade your plan for more features",
-      icon: "⭐",
-      onPress: () => navigation.navigate("Subscription"),
-      color: Colors.warning[500],
-    },
-    {
-      title: "Chat",
-      description: "Message with other users",
-      icon: "💬",
-      onPress: () => navigation.navigate("Chat", { receiverId: "" }),
-      color: Colors.success[500],
-    },
-  ];
+  // Role-based menu items
+  const getMenuItems = () => {
+    const baseItems = [
+      {
+        title: "Profile",
+        description: "Manage your profile and settings",
+        icon: "👤",
+        onPress: () => navigation.navigate("Profile"),
+        color: Colors.secondary[500],
+      },
+      {
+        title: "Subscription",
+        description: "Upgrade your plan for more features",
+        icon: "⭐",
+        onPress: () => navigation.navigate("Subscription"),
+        color: Colors.warning[500],
+      },
+      {
+        title: "Chat",
+        description: "Message with other users",
+        icon: "💬",
+        onPress: () => navigation.navigate("Chat", { receiverId: "" }),
+        color: Colors.success[500],
+      },
+    ];
+
+    if (user?.role === "boutique") {
+      return [
+        {
+          title: "Post Job",
+          description: "Create a new job posting",
+          icon: "📝",
+          onPress: () => navigation.navigate("PostJob"),
+          color: Colors.primary[500],
+        },
+        {
+          title: "My Jobs",
+          description: "Manage your posted jobs",
+          icon: "📋",
+          onPress: () => navigation.navigate("MyJobs"),
+          color: Colors.primary[600],
+        },
+        {
+          title: "Applications",
+          description: "Review job applications",
+          icon: "📄",
+          onPress: () => navigation.navigate("Applications"),
+          color: Colors.secondary[600],
+        },
+        ...baseItems,
+      ];
+    } else if (user?.role === "tailor") {
+      return [
+        {
+          title: "Find Jobs",
+          description: "Browse and search for jobs",
+          icon: "🔍",
+          onPress: () => navigation.navigate("JobBoard"),
+          color: Colors.primary[500],
+        },
+        {
+          title: "My Applications",
+          description: "Track your job applications",
+          icon: "📝",
+          onPress: () => navigation.navigate("MyApplications"),
+          color: Colors.secondary[500],
+        },
+        {
+          title: "Portfolio",
+          description: "Showcase your work",
+          icon: "🎨",
+          onPress: () => navigation.navigate("Portfolio"),
+          color: Colors.success[500],
+        },
+        ...baseItems,
+      ];
+    }
+
+    // Default items for unknown roles
+    return [
+      {
+        title: "Job Board",
+        description: "Browse and apply to jobs",
+        icon: "💼",
+        onPress: () => navigation.navigate("JobBoard"),
+        color: Colors.primary[500],
+      },
+      ...baseItems,
+    ];
+  };
+
+  const menuItems = getMenuItems();
 
   // Add admin dashboard for admin users
   if (user?.role === "admin") {
@@ -71,6 +133,30 @@ export default function HomeScreen({ navigation }: Props) {
       color: Colors.error[500],
     });
   }
+
+  // Role-based stats
+  const getStats = () => {
+    if (user?.role === "boutique") {
+      return [
+        { number: "0", label: "Active Jobs" },
+        { number: "0", label: "Applications" },
+        { number: "0", label: "Messages" },
+      ];
+    } else if (user?.role === "tailor") {
+      return [
+        { number: "0", label: "Applications" },
+        { number: "0", label: "Interviews" },
+        { number: "0", label: "Messages" },
+      ];
+    }
+    return [
+      { number: "0", label: "Active Jobs" },
+      { number: "0", label: "Applications" },
+      { number: "0", label: "Messages" },
+    ];
+  };
+
+  const stats = getStats();
 
   return (
     <ScrollView style={styles.container}>
@@ -103,18 +189,12 @@ export default function HomeScreen({ navigation }: Props) {
       <View style={styles.statsContainer}>
         <Text style={styles.statsTitle}>Quick Stats</Text>
         <View style={styles.statsGrid}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Active Jobs</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Applications</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>Messages</Text>
-          </View>
+          {stats.map((stat, index) => (
+            <View key={index} style={styles.statItem}>
+              <Text style={styles.statNumber}>{stat.number}</Text>
+              <Text style={styles.statLabel}>{stat.label}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
