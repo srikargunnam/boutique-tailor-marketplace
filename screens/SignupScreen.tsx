@@ -53,7 +53,10 @@ export default function SignupScreen({ navigation }: Props) {
       const { data, error } = await AuthService.signUp(email, password, role);
 
       if (error) {
-        Alert.alert("Signup Failed", error.message);
+        console.log("signup error", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Signup failed";
+        Alert.alert("Signup Failed", errorMessage);
         return;
       }
 
@@ -65,7 +68,7 @@ export default function SignupScreen({ navigation }: Props) {
           "Account created successfully! Please check your email for verification."
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", "An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -156,6 +159,8 @@ export default function SignupScreen({ navigation }: Props) {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              textContentType="emailAddress"
+              autoComplete="email"
             />
           </View>
 
@@ -184,6 +189,9 @@ export default function SignupScreen({ navigation }: Props) {
               onChangeText={setPassword}
               secureTextEntry
               autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="newPassword"
+              autoComplete="new-password"
             />
           </View>
 
@@ -212,6 +220,9 @@ export default function SignupScreen({ navigation }: Props) {
               onChangeText={setConfirmPassword}
               secureTextEntry
               autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="newPassword"
+              autoComplete="new-password"
             />
           </View>
 

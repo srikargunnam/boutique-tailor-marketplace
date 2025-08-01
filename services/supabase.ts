@@ -1,17 +1,21 @@
+import { SUPABASE_ANON_KEY, SUPABASE_URL } from "@env";
 import { createClient } from "@supabase/supabase-js";
 import Constants from "expo-constants";
+import "react-native-url-polyfill/auto";
 
-const supabaseUrl =
-  Constants.expoConfig?.extra?.supabaseUrl || process.env.SUPABASE_URL;
+// Get Supabase configuration from environment variables
+const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl || SUPABASE_URL;
 const supabaseAnonKey =
-  Constants.expoConfig?.extra?.supabaseAnonKey || process.env.SUPABASE_ANON_KEY;
+  Constants.expoConfig?.extra?.supabaseAnonKey || SUPABASE_ANON_KEY;
 
+// Validate configuration
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error(
     "Missing Supabase configuration. Please check your environment variables."
   );
 }
 
+// Create Supabase client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Database types

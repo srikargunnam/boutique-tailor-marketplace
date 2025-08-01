@@ -27,19 +27,9 @@ export class AuthService {
 
       if (error) throw error;
 
-      // Create user profile in users table
-      if (data.user) {
-        const { error: profileError } = await supabase.from("users").insert([
-          {
-            id: data.user.id,
-            email: data.user.email!,
-            role,
-            subscription_status: "free",
-          },
-        ]);
-
-        if (profileError) throw profileError;
-      }
+      // Note: Profile creation will be handled by database trigger
+      // or we'll create it when the user first logs in
+      console.log("User signed up successfully:", data.user?.id);
 
       return { data, error: null };
     } catch (error) {

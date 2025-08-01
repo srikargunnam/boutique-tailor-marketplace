@@ -30,10 +30,16 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# env files
+.env
 
 # typescript
 *.tsbuildinfo
+
+# SQL files
+*.sql
+
+# other local files
+SETUP.md
 
 app-example
